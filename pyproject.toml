@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nim-opensansad"
+version = "0.1.0"
+description = "Parliamentary RAG using NVIDIA NIM stack"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    # LlamaIndex core + NVIDIA integrations
+    "llama-index-core>=0.10",
+    "llama-index-embeddings-nvidia>=0.1",
+    "llama-index-llms-nvidia>=0.1",
+    "llama-index-postprocessor-nvidia-rerank>=0.1",
+    "llama-index-vector-stores-milvus>=0.2",
+    # Milvus client
+    "pymilvus>=2.4",
+    # Data source
+    "datasets>=4.0",
+    "pyarrow>=15.0",
+    # CLI
+    "typer>=0.12",
+    "rich>=13",
+    # Config
+    "python-dotenv>=1.0",
+    "llama-index-embeddings-huggingface>=0.7.0",
+]
+
+[project.scripts]
+opensansad = "nim_opensansad.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nim_opensansad"]

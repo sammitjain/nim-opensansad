@@ -1,0 +1,17 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.DS_Store
+
+# Docker volumes (Milvus data)
+volumes/
+
+# Local data (PDFs, metadata DB)
+data/docs/
+data/metadata.db
+
+# Benchmark outputs (throwaway)
+tests/bench_outputs/
+tests/bench_results.json
