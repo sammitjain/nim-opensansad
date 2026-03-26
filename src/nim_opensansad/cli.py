@@ -64,7 +64,7 @@ def search(
     """Retrieve, rerank, and synthesize an answer from indexed documents."""
     from .query import build_query_engine
     from .stats import build_evidence_packet
-    from .metadata import DEFAULT_DB_PATH
+    from .metadata import DEFAULT_DB_PATH, DEFAULT_ALIAS_PATH, load_alias_map
 
     console.print(f"\n[bold]Query:[/bold] {query}")
     if mp:
@@ -72,6 +72,18 @@ def search(
     if min_:
         console.print(f"[bold]Ministry filter:[/bold] {min_}")
     console.print()
+
+    # Resolve MP aliases for Milvus filtering
+    mp_aliases: list[str] | None = None
+    if mp:
+        if DEFAULT_ALIAS_PATH.exists():
+            alias_map = load_alias_map(DEFAULT_ALIAS_PATH)
+            mp_aliases = alias_map.get(mp)
+            if mp_aliases and len(mp_aliases) > 1:
+                console.print(f"[dim]Alias expansion: {', '.join(mp_aliases)}[/dim]")
+        else:
+            console.print("[dim]No alias map found — filtering with canonical name only. "
+                          "Run 'opensansad build-aliases' for better recall.[/dim]")
 
     # Build stats evidence packet if filters are specified
     evidence = None
@@ -89,17 +101,8 @@ def search(
             console.print("[yellow]No stats found for the specified filters.[/yellow]")
 
     with console.status("Querying NVIDIA NIMs..."):
-        engine = build_query_engine()
-        # If we have stats evidence, prepend it to the query for the LLM
-        if evidence:
-            augmented_query = (
-                f"Use the following statistical context to help answer the query.\n\n"
-                f"{evidence}\n\n"
-                f"Query: {query}"
-            )
-            response = engine.query(augmented_query)
-        else:
-            response = engine.query(query)
+        engine = build_query_engine(mp=mp, ministry=min_, evidence=evidence, mp_aliases=mp_aliases)
+        response = engine.query(query)
 
     console.print(Panel(Markdown(str(response)), title="Answer", border_style="green"))
 
@@ -125,6 +128,17 @@ def build_db(
 
     target = db_path or DEFAULT_DB_PATH
     build_metadata_db(parquet_path=parquet, db_path=target)
+
+
+@app.command(name="build-aliases")
+def build_aliases(
+    out_path: Optional[Path] = typer.Option(None, "--out", help="Output JSON path (default: data/mp_aliases.json)."),
+):
+    """Build the MP alias map (canonical name → all name variants) from HuggingFace supplementary data."""
+    from .metadata import save_alias_map, DEFAULT_ALIAS_PATH
+
+    target = out_path or DEFAULT_ALIAS_PATH
+    save_alias_map(out_path=target)
 
 
 @app.command(name="list-mps")

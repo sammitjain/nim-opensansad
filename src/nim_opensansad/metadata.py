@@ -112,6 +112,49 @@ def _build_mp_name_map(dataset_repo: str) -> dict[str, str]:
     return name_map
 
 
+def build_alias_map(dataset_repo: str = HF_DATASET) -> dict[str, list[str]]:
+    """Build canonical_name → [all name variants] map.
+
+    Each canonical name maps to a list of all names (across Lok Sabhas) that
+    share the same mpNo, including the canonical name itself.  This is used
+    at query time to expand a single canonical MP name into all the variants
+    that may appear in Milvus chunk metadata.
+    """
+    name_map = _build_mp_name_map(dataset_repo)
+    aliases: dict[str, set[str]] = {}
+    for old_name, canonical in name_map.items():
+        aliases.setdefault(canonical, set()).add(old_name)
+        aliases[canonical].add(canonical)
+    return {k: sorted(v) for k, v in sorted(aliases.items())}
+
+
+DEFAULT_ALIAS_PATH = Path(__file__).parent.parent.parent / "data" / "mp_aliases.json"
+
+
+def save_alias_map(
+    out_path: Path = DEFAULT_ALIAS_PATH,
+    dataset_repo: str = HF_DATASET,
+) -> Path:
+    """Build and persist the alias map as a JSON file."""
+    console.print("[bold]Building MP alias map...[/bold]")
+    alias_map = build_alias_map(dataset_repo)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(alias_map, f, ensure_ascii=False, indent=2)
+    multi = sum(1 for v in alias_map.values() if len(v) > 1)
+    console.print(
+        f"[green]Done.[/green] {len(alias_map)} canonical names "
+        f"({multi} with multiple aliases) → {out_path}"
+    )
+    return out_path
+
+
+def load_alias_map(path: Path = DEFAULT_ALIAS_PATH) -> dict[str, list[str]]:
+    """Load the alias map from the JSON file."""
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 def get_all_canonical_mp_names(dataset_repo: str = HF_DATASET) -> list[str]:
     """Return sorted list of all canonical MP names (for list/search commands)."""
     name_map = _build_mp_name_map(dataset_repo)

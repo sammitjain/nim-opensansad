@@ -33,3 +33,8 @@ opensansad = "nim_opensansad.cli:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/nim_opensansad"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
