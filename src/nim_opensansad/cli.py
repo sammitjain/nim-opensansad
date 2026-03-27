@@ -11,6 +11,7 @@ Commands:
   opensansad list-mps --search "term"       — search canonical MP names
   opensansad list-ministries --search "term" — search ministry names
   opensansad stats                          — show collection size and chunk count
+  opensansad eval                           — run retrieval eval against test set
 """
 
 import subprocess
@@ -246,3 +247,21 @@ def stats():
             table.add_row(f"  at {target:,} chunks", fmt_size(int(est)))
 
     console.print(table)
+
+
+@app.command(name="eval")
+def eval_cmd(
+    test_set: Optional[Path] = typer.Option(None, "--test-set", help="Path to test set JSON (default: eval/test_set.json)."),
+    top_k: Optional[int] = typer.Option(None, "--top-k", help="Override TOP_K for retrieval."),
+    debug: bool = typer.Option(False, "--debug", help="Dump chunk metadata for queries with P@k < 1.0."),
+):
+    """Run retrieval evaluation against a curated test set (no LLM calls)."""
+    from .eval import run_eval, print_report, DEFAULT_TEST_SET
+
+    target = test_set or DEFAULT_TEST_SET
+    if not target.exists():
+        console.print(f"[red]Test set not found: {target}[/red]")
+        raise typer.Exit(1)
+
+    report = run_eval(test_set_path=target, top_k=top_k, debug=debug)
+    print_report(report)

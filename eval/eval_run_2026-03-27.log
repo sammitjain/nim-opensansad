@@ -1,0 +1,225 @@
+Running 18 queries (top_k=10)...
+
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1774602171.132082  651649 fork_posix.cc:71] Other threads are currently calling into gRPC, skipping fork() handlers
+  q01 unfiltered  P@10=0.10  hit@1=N  docs=10  231ms
+
+    DEBUG q01 (unfiltered)  expected: {'members_contains_any': ['RAHUL GANDHI', 'Rahul Gandhi', 'Shri Rahul Gandhi']}
+    [ 1] FAIL  qa_id=LS17-S7-STARRED-122             ministry=YOUTH AFFAIRS AND SPORTS                  members=C.N. Annadurai, Anurag Sharma  ← members='C.N. Annadurai, Anurag Sharma'
+    [ 2] FAIL  qa_id=LS17-S4-UNSTARRED-1456          ministry=RURAL DEVELOPMENT                         members=Manickam Tagore B, Balubhau (Alias Suresh Narayan) Dhanorkar  ← members='Manickam Tagore B, Balubhau (Alias Suresh Narayan)
+Dhanorkar'
+    [ 3] PASS  qa_id=LS17-S5-UNSTARRED-2671          ministry=COMMERCE AND INDUSTRY                     members=Rahul Gandhi
+    [ 4] FAIL  qa_id=LS16-S11-UNSTARRED-2990         ministry=PETROLEUM AND NATURAL GAS                 members=RABINDRA KUMAR JENA, RANGASWAMY DHRUVANARAYANA, SRINIVAS KES  ← members='RABINDRA KUMAR JENA, RANGASWAMY DHRUVANARAYANA,
+SRINIVAS KESINENI, RAYAPATI SAMBASIVA RAO, KONDA VISHWESHWAR REDDY, (SMT.) RATNA DE(NAG), HARI OM PANDEY, RAM CHARITRA, SATISH CHANDRA DUBEY, BALABHADRA MAJHI, K. KAMARAAJ, K. ASHOK KUMAR, PANKAJ CHOWDHARY, R. GOPALAKRISHNAN, RAM TAHAL
+CHOUDHARY, MUZAFFAR HUSSAIN BAIG, LAXMAN GILUWA'
+    [ 5] FAIL  qa_id=LS17-S14-STARRED-5              ministry=LABOUR AND EMPLOYMENT                     members=Vinayak Bhaurao Raut, Sanjay Haribhau Jadhav  ← members='Vinayak Bhaurao Raut, Sanjay Haribhau Jadhav'
+    [ 6] FAIL  qa_id=LS16-S11-UNSTARRED-4103         ministry=PETROLEUM AND NATURAL GAS                 members=RAJESH KUMAR DIWAKAR, SHARAD TRIPATHI, GAURAV GOGOI, CHANDRA  ← members='RAJESH KUMAR DIWAKAR, SHARAD TRIPATHI, GAURAV
+GOGOI, CHANDRAKANT BHAURAO KHAIRE, MAULANA BADRUDDIN AJMAL, RODMAL NAGAR'
+    [ 7] FAIL  qa_id=LS16-S11-UNSTARRED-1463         ministry=PANCHAYATI RAJ                            members=MANOJ RAJORIA  ← members='MANOJ RAJORIA'
+    [ 8] FAIL  qa_id=LS16-S11-UNSTARRED-3355         ministry=LAW AND JUSTICE                           members=LAXMI NARAYAN YADAV  ← members='LAXMI NARAYAN YADAV'
+    [ 9] FAIL  qa_id=LS16-S10-UNSTARRED-3092         ministry=PETROLEUM AND NATURAL GAS                 members=DILIP KUMAR MANSUKHLAL GANDHI, HARIOM SINGH RATHORE, CHANDRA  ← members='DILIP KUMAR MANSUKHLAL GANDHI, HARIOM SINGH
+RATHORE, CHANDRAKANT BHAURAO KHAIRE, RAJU ALIAS DEVAPPA ANNA SHETTI, BAIJAYANT "JAY" PANDA, DEVUSINH JESINGBHAI CHAUHAN, PARASURAMAN K.'
+    [10] FAIL  qa_id=LS16-S13-UNSTARRED-2226         ministry=PETROLEUM AND NATURAL GAS                 members=GOPALAKRISHNAN CHINNARAJ, HARI BABU KAMBHAMPATI, HARISHCHAND  ← members='GOPALAKRISHNAN CHINNARAJ, HARI BABU KAMBHAMPATI,
+HARISHCHANDRA DEORAM CHAVAN, REKHA ARUN VERMA, BHAVANA GAWALI (PATIL), MOHANBHAI KALYANJIBHAI KUNDARIYA'
+
+  q01 filtered    P@10=1.00  hit@1=Y  docs=9  438ms
+  q02 unfiltered  P@10=1.00  hit@1=Y  docs=10  126ms
+  q02 filtered    P@10=1.00  hit@1=Y  docs=10  120ms
+  q03 unfiltered  P@10=0.80  hit@1=Y  docs=10  111ms
+
+    DEBUG q03 (unfiltered)  expected: {'text_contains_any': ['remdesivir', 'Remdesivir']}
+    [ 1] PASS  qa_id=LS17-S4-UNSTARRED-1431          ministry=CHEMICALS AND FERTILIZERS                 members=Anil Firojiya
+    [ 2] PASS  qa_id=LS17-S6-UNSTARRED-1223          ministry=CHEMICALS AND FERTILIZERS                 members=Kumbakudi Sudhakaran, Faizal P.P. Mohammed, D.K. Suresh, Gau
+    [ 3] FAIL  qa_id=LS16-S16-UNSTARRED-2661         ministry=POWER                                     members=KRISHN PRATAP SINGH  ← subject='Review of Private Power Plants'
+    [ 4] PASS  qa_id=LS17-S4-UNSTARRED-348           ministry=CHEMICALS AND FERTILIZERS                 members=Prathap Simha, L.S. Tejasvi Surya
+    [ 5] PASS  qa_id=LS17-S6-UNSTARRED-2440          ministry=CHEMICALS AND FERTILIZERS                 members=Prathap Simha, L.S. Tejasvi Surya
+    [ 6] PASS  qa_id=LS17-S8-UNSTARRED-1699          ministry=HEALTH AND FAMILY WELFARE                 members=P.R. Natarajan
+    [ 7] FAIL  qa_id=LS17-S7-UNSTARRED-3266          ministry=HEALTH AND FAMILY WELFARE                 members=Ranjanben Dhananjay Bhatt  ← subject='Export of COVID-19 Medicines'
+    [ 8] PASS  qa_id=LS17-S6-UNSTARRED-1184          ministry=CHEMICALS AND FERTILIZERS                 members=Parvesh Sahib Singh
+    [ 9] PASS  qa_id=LS17-S6-UNSTARRED-300           ministry=CHEMICALS AND FERTILIZERS                 members=Ranjanben Dhananjay Bhatt
+    [10] PASS  qa_id=LS17-S9-UNSTARRED-2167          ministry=HEALTH AND FAMILY WELFARE                 members=Dushyant Singh
+
+  q04 unfiltered  P@10=0.30  hit@1=N  docs=10  156ms
+
+    DEBUG q04 (unfiltered)  expected: {'members_contains_any': ['SUPRIYA SADANAND SULE', 'Smt. Supriya Sule', 'Supriya Sadanand Sule'], 'ministry_eq': 'HEALTH AND FAMILY WELFARE'}
+    [ 1] FAIL  qa_id=LS17-S11-UNSTARRED-441          ministry=HEALTH AND FAMILY WELFARE                 members=Mahesh Sahoo, Badruddin Ajmal, Kunwar Danish Ali, Rajeshbhai  ← members='Mahesh Sahoo, Badruddin Ajmal, Kunwar Danish Ali,
+Rajeshbhai Naranbhai Chudasama, Umesh G. Jadhav, Jaisiddeshwar Shivacharya Mahaswamiji, L.S. Tejasvi Surya, Sanganna Amarappa Karadi, Gomati Sai'
+    [ 2] PASS  qa_id=LS17-S3-UNSTARRED-930           ministry=HEALTH AND FAMILY WELFARE                 members=Khagen Murmu, Rampreet Mandal, Rajiv Ranjan (Lalan) Singh, A
+    [ 3] FAIL  qa_id=LS16-S13-STARRED-247            ministry=YOUTH AFFAIRS AND SPORTS                  members=DHANANJAY BHIMRAO MAHADIK, SUPRIYA SADANAND SULE  ← ministry='YOUTH AFFAIRS AND SPORTS'
+    [ 4] PASS  qa_id=LS17-S6-UNSTARRED-3030          ministry=HEALTH AND FAMILY WELFARE                 members=Supriya Sadanand Sule, Deepak Baij
+    [ 5] FAIL  qa_id=LS17-S5-UNSTARRED-5042          ministry=YOUTH AFFAIRS AND SPORTS                  members=DNV Senthilkumar. S., Sunil Dattatray Tatkare, Kuldeep Rai S  ← ministry='YOUTH AFFAIRS AND SPORTS'
+    [ 6] FAIL  qa_id=LS18-S2-UNSTARRED-834           ministry=EXTERNAL AFFAIRS                          members=Shri Adhikari Deepak Dev, Dr. T Sumathy Alias Thamizhachi Th  ← ministry='EXTERNAL AFFAIRS'
+    [ 7] FAIL  qa_id=LS17-S3-UNSTARRED-415           ministry=HOME AFFAIRS                              members=DNV Senthilkumar. S., Shriniwas Dadasaheb Patil, Sunil Datta  ← ministry='HOME AFFAIRS'
+    [ 8] FAIL  qa_id=LS16-S16-UNSTARRED-2044         ministry=AYURVEDA,YOGA & NATUROPATHY,UNANI,SIDDHA AND HOMEOPATHY (AYUSH)  members=JAYAKUMAR JAYAVARDHAN, HEENA VIJAYKUMAR GAVIT, SUPRIYA SADAN  ← ministry='AYURVEDA,YOGA &
+NATUROPATHY,UNANI,SIDDHA AND HOMEOPATHY (AYUSH)'
+    [ 9] FAIL  qa_id=LS16-S10-UNSTARRED-636          ministry=HEALTH AND FAMILY WELFARE                 members=Shrirang Appa Barne, SHIVAJI ADHALRAO PATIL, ANANDRAO  ADSUL  ← members='Shrirang Appa Barne, SHIVAJI ADHALRAO PATIL,
+ANANDRAO  ADSUL, VINAYAK BHAURAO RAUT, SHRIKANT EKNATH SHINDE, JAYADEV GALLA'
+    [10] PASS  qa_id=LS18-S2-UNSTARRED-3164          ministry=HEALTH AND FAMILY WELFARE                 members=Prof. Varsha Eknath Gaikwad, Shri Amar Sharadrao Kale, Shri
+
+  q04 filtered    P@10=1.00  hit@1=Y  docs=10  557ms
+  q05 unfiltered  P@10=1.00  hit@1=Y  docs=10  263ms
+  q05 filtered    P@10=1.00  hit@1=Y  docs=10  452ms
+  q06 unfiltered  P@10=1.00  hit@1=Y  docs=10  264ms
+  q06 filtered    P@10=1.00  hit@1=Y  docs=10  127ms
+  q07 unfiltered  P@10=0.70  hit@1=Y  docs=9  482ms
+
+    DEBUG q07 (unfiltered)  expected: {'text_contains_any': ['NPA', 'non-performing', 'housing loan', 'Housing Loan']}
+    [ 1] PASS  qa_id=LS16-S10-UNSTARRED-2990         ministry=FINANCE                                   members=MANSUKHBHAI DHANJIBHAI VASAVA, BHAGWANTH KHUBA, RAMA DEVI
+    [ 2] FAIL  qa_id=LS17-S2-UNSTARRED-863           ministry=HOUSING AND URBAN AFFAIRS                 members=P.R. Natarajan  ← subject='Utilising Land Banks of PSEs for Housing'
+    [ 3] PASS  qa_id=LS16-S14-UNSTARRED-6442         ministry=FINANCE                                   members=SISIR KUMAR ADHIKARI
+    [ 4] PASS  qa_id=LS16-S14-UNSTARRED-3534         ministry=FINANCE                                   members=YERRAM VENKATA SUBBAREDDY
+    [ 5] FAIL  qa_id=LS16-S15-UNSTARRED-3992         ministry=FINANCE                                   members=C. N. JAYADEVAN  ← subject='Transparent Clinical Trials'
+    [ 6] PASS  qa_id=LS16-S15-UNSTARRED-1625         ministry=FINANCE                                   members=CHANDRA PRAKASH JOSHI, RAMDAS CHANDRABHANJI TADAS
+    [ 7] PASS  qa_id=LS16-S15-UNSTARRED-470          ministry=FINANCE                                   members=PRAHLAD SINGH PATEL
+    [ 8] FAIL  qa_id=LS17-S5-UNSTARRED-4143          ministry=FINANCE                                   members=Umesh G. Jadhav  ← subject='Home Loans from NBFCs'
+    [ 9] PASS  qa_id=LS17-S14-UNSTARRED-174          ministry=FINANCE                                   members=Andimuthu Raja, A. Ganeshamurthi
+    [10] PASS  qa_id=LS16-S10-UNSTARRED-2990         ministry=FINANCE                                   members=MANSUKHBHAI DHANJIBHAI VASAVA, BHAGWANTH KHUBA, RAMA DEVI
+
+  q08 unfiltered  P@10=1.00  hit@1=Y  docs=10  149ms
+  q08 filtered    P@10=1.00  hit@1=Y  docs=10  497ms
+  q09 unfiltered  P@10=0.10  hit@1=Y  docs=10  275ms
+
+    DEBUG q09 (unfiltered)  expected: {'members_contains_any': ['Dr. Nishikant Dubey', 'NISHIKANT  DUBEY', 'Nishikant  Dubey'], 'ministry_eq': 'FINANCE'}
+    [ 1] PASS  qa_id=LS17-S1-STARRED-138             ministry=FINANCE                                   members=Nishikant  Dubey, Suresh Kodikunnil
+    [ 2] FAIL  qa_id=LS16-S15-UNSTARRED-2953         ministry=FINANCE                                   members=NALIN KUMAR KATEEL, DODDAALAHALLI KEMPEGOWDA SURESH, B.N. CH  ← members='NALIN KUMAR KATEEL, DODDAALAHALLI KEMPEGOWDA
+SURESH, B.N. CHANDRAPPA'
+    [ 3] FAIL  qa_id=LS17-S1-UNSTARRED-305           ministry=FINANCE                                   members=Pushpendra Singh Chandel  ← members='Pushpendra Singh Chandel'
+    [ 4] FAIL  qa_id=LS17-S5-UNSTARRED-4325          ministry=FINANCE                                   members=Gangasandra Siddappa Basavaraj  ← members='Gangasandra Siddappa Basavaraj'
+    [ 5] FAIL  qa_id=LS16-S16-UNSTARRED-834          ministry=FINANCE                                   members=A.P. JITHENDER REDDY  ← members='A.P. JITHENDER REDDY'
+    [ 6] FAIL  qa_id=LS18-S4-UNSTARRED-1625          ministry=FINANCE                                   members=Shri Azad Kirti Jha  ← members='Shri Azad Kirti Jha'
+    [ 7] FAIL  qa_id=LS16-S14-UNSTARRED-2333         ministry=FINANCE                                   members=KAUSHALENDRA KUMAR  ← members='KAUSHALENDRA KUMAR'
+    [ 8] FAIL  qa_id=LS18-S5-UNSTARRED-2491          ministry=FINANCE                                   members=Thiru Dayanidhi Maran  ← members='Thiru Dayanidhi Maran'
+    [ 9] FAIL  qa_id=LS16-S17-UNSTARRED-1028         ministry=FINANCE                                   members=PRITAM GOPINATH MUNDE, Shrirang Appa Barne, SHIVAJI ADHALRAO  ← members='PRITAM GOPINATH MUNDE, Shrirang Appa Barne, SHIVAJI
+ADHALRAO PATIL, ANANDRAO  ADSUL'
+    [10] FAIL  qa_id=LS17-S1-UNSTARRED-2306          ministry=FINANCE                                   members=Kinjarapu Ram Mohan Naidu  ← members='Kinjarapu Ram Mohan Naidu'
+
+  q09 filtered    P@10=1.00  hit@1=Y  docs=9  451ms
+  q10 unfiltered  P@10=1.00  hit@1=Y  docs=10  144ms
+  q11 unfiltered  P@10=0.30  hit@1=N  docs=10  614ms
+
+    DEBUG q11 (unfiltered)  expected: {'members_contains_any': ['ASADUDDIN OWAISI', 'Asaduddin Owaisi', 'Shri Asaduddin Owaisi'], 'ministry_eq': 'HOME AFFAIRS'}
+    [ 1] FAIL  qa_id=LS16-S12-UNSTARRED-1607         ministry=HOME AFFAIRS                              members=RAVINDRA VISHWANATH GAIKWAD  ← members='RAVINDRA VISHWANATH GAIKWAD'
+    [ 2] PASS  qa_id=LS17-S1-UNSTARRED-584           ministry=HOME AFFAIRS                              members=Asaduddin Owaisi
+    [ 3] FAIL  qa_id=LS17-S1-UNSTARRED-1772          ministry=HOME AFFAIRS                              members=Gopal Chinayya Shetty  ← members='Gopal Chinayya Shetty'
+    [ 4] FAIL  qa_id=LS17-S3-UNSTARRED-3826          ministry=HOME AFFAIRS                              members=Sushil Kumar Singh  ← members='Sushil Kumar Singh'
+    [ 5] PASS  qa_id=LS18-S6-UNSTARRED-1453          ministry=HOME AFFAIRS                              members=Shri Asaduddin Owaisi
+    [ 6] FAIL  qa_id=LS16-S14-UNSTARRED-675          ministry=HOME AFFAIRS                              members=JANARDAN MISHRA  ← members='JANARDAN MISHRA'
+    [ 7] FAIL  qa_id=LS16-S15-UNSTARRED-1026         ministry=HOME AFFAIRS                              members=B.V. NAYAK  ← members='B.V. NAYAK'
+    [ 8] PASS  qa_id=LS17-S1-UNSTARRED-3814          ministry=HOME AFFAIRS                              members=Imtiaz Jaleel Syed, Asaduddin Owaisi
+    [ 9] FAIL  qa_id=LS16-S14-UNSTARRED-2790         ministry=HOME AFFAIRS                              members=SADASHIV KISAN LOKHANDE  ← members='SADASHIV KISAN LOKHANDE'
+    [10] FAIL  qa_id=LS16-S16-UNSTARRED-7            ministry=HOME AFFAIRS                              members=JUGAL KISHORE SHARMA  ← members='JUGAL KISHORE SHARMA'
+
+  q11 filtered    P@10=1.00  hit@1=Y  docs=10  594ms
+  q12 unfiltered  P@10=0.50  hit@1=Y  docs=9  331ms
+
+    DEBUG q12 (unfiltered)  expected: {'members_contains_any': ['Prof. Sougata Ray', 'SAUGATA ROY', 'Sougata Ray'], 'ministry_eq': 'RAILWAYS'}
+    [ 1] PASS  qa_id=LS17-S8-UNSTARRED-1338          ministry=RAILWAYS                                  members=N.K. Premachandran, Sougata Ray
+    [ 2] PASS  qa_id=LS17-S4-UNSTARRED-627           ministry=RAILWAYS                                  members=Rahul Ramesh Shewale, Sougata Ray
+    [ 3] FAIL  qa_id=LS17-S9-UNSTARRED-2958          ministry=RAILWAYS                                  members=Sajda Ahmed, Khagen Murmu  ← members='Sajda Ahmed, Khagen Murmu'
+    [ 4] PASS  qa_id=LS18-S4-UNSTARRED-2090          ministry=RAILWAYS                                  members=Shri Saptagiri Sankar Ulaka, Shri Hibi Eden, Shri Gurmeet Si
+    [ 5] PASS  qa_id=LS17-S8-UNSTARRED-1338          ministry=RAILWAYS                                  members=N.K. Premachandran, Sougata Ray
+    [ 6] FAIL  qa_id=LS16-S11-UNSTARRED-4526         ministry=RAILWAYS                                  members=HEENA VIJAYKUMAR GAVIT, JAYAKUMAR JAYAVARDHAN, RAJEEV SHANKA  ← members='HEENA VIJAYKUMAR GAVIT, JAYAKUMAR JAYAVARDHAN,
+RAJEEV SHANKARRAO SATAV, VIJAYSINH MOHITE PATIL, SUPRIYA SADANAND SULE'
+    [ 7] FAIL  qa_id=LS17-S6-UNSTARRED-1552          ministry=RAILWAYS                                  members=Sukanta Majumdar, Vinod Kumar Sonkar, Prataprao  Jadhav, Raj  ← members='Sukanta Majumdar, Vinod Kumar Sonkar, Prataprao
+Jadhav, Rajveer (Raju Bhaiya) Singh, Bhola Singh, Sanjay Sadashivrao Mandlik, Shrirang Appa Barne, Chandra Sekhar Sahu, Sudheer Gupta, Sangeeta Kumari Singh Deo, Raja Amareshwara Naik, Jayanta Kumar Roy, Bidyut Baran Mahato'
+    [ 8] PASS  qa_id=LS17-S12-UNSTARRED-1128         ministry=RAILWAYS                                  members=Sajda Ahmed, Sougata Ray
+    [ 9] FAIL  qa_id=LS17-S10-UNSTARRED-195          ministry=RAILWAYS                                  members=Navneet Ravi Rana, Locket Chatterjee, Sunil Kumar Pintu, Rit  ← members='Navneet Ravi Rana, Locket Chatterjee, Sunil Kumar
+Pintu, Riti Pathak, Geeta Kora, Ajay Kumar Mandal, Ramesh Chander Kaushik'
+    [10] FAIL  qa_id=LS18-S3-STARRED-236             ministry=RAILWAYS                                  members=Smt. Rachna Banerjee  ← members='Smt. Rachna Banerjee'
+
+  q12 filtered    P@10=1.00  hit@1=Y  docs=9  501ms
+  q13 unfiltered  P@10=0.50  hit@1=N  docs=9  347ms
+
+    DEBUG q13 (unfiltered)  expected: {'members_contains_any': ['Km. Shobha Karandlaje', 'SHOBHA KARANDLAJE', 'Shobha Karandlaje']}
+    [ 1] FAIL  qa_id=LS17-S9-UNSTARRED-264           ministry=AGRICULTURE AND FARMERS WELFARE           members=Su Thirunavukkarasar  ← members='Su Thirunavukkarasar'
+    [ 2] FAIL  qa_id=LS17-S9-UNSTARRED-264           ministry=AGRICULTURE AND FARMERS WELFARE           members=Su Thirunavukkarasar  ← members='Su Thirunavukkarasar'
+    [ 3] PASS  qa_id=LS17-S1-UNSTARRED-2580          ministry=AGRICULTURE AND FARMERS WELFARE           members=Shobha Karandlaje
+    [ 4] PASS  qa_id=LS16-S17-UNSTARRED-395          ministry=AGRICULTURE AND FARMERS WELFARE           members=SHOBHA KARANDLAJE
+    [ 5] PASS  qa_id=LS16-S14-UNSTARRED-2868         ministry=AGRICULTURE AND FARMERS WELFARE           members=SHOBHA KARANDLAJE
+    [ 6] PASS  qa_id=LS16-S14-STARRED-144            ministry=AGRICULTURE AND FARMERS WELFARE           members=SHOBHA KARANDLAJE, PRATHAP SIMHA
+    [ 7] PASS  qa_id=LS16-S11-UNSTARRED-3988         ministry=COMMERCE AND INDUSTRY                     members=SHOBHA KARANDLAJE
+    [ 8] FAIL  qa_id=LS16-S15-STARRED-183            ministry=AGRICULTURE AND FARMERS WELFARE           members=PRATAPRAO GANPATRAO JADHAV  ← members='PRATAPRAO GANPATRAO JADHAV'
+    [ 9] FAIL  qa_id=LS16-S10-UNSTARRED-3342         ministry=AGRICULTURE AND FARMERS WELFARE           members=RAJEEV SHANKARRAO SATAV, PARBHUBHAI NAGARBHAI VASAVA, SUPRIY  ← members='RAJEEV SHANKARRAO SATAV, PARBHUBHAI NAGARBHAI
+VASAVA, SUPRIYA SADANAND SULE, DHARAMBIR BHALERAM, DEVJI MANSINGRAM PATEL, RAJESHBHAI NARANBHAI CHUDASAMA, YERRAM VENKATA SUBBAREDDY, VIJAYSINH MOHITE PATIL'
+    [10] FAIL  qa_id=LS17-S11-UNSTARRED-4546         ministry=AGRICULTURE AND FARMERS WELFARE           members=Sukhbir Singh Badal  ← members='Sukhbir Singh Badal'
+
+  q13 filtered    P@10=1.00  hit@1=Y  docs=9  480ms
+  q14 unfiltered  P@10=0.20  hit@1=N  docs=10  462ms
+
+    DEBUG q14 (unfiltered)  expected: {'members_contains_any': ['ANURAG SINGH THAKUR', 'Anurag Singh Thakur', 'Shri Anurag Singh Thakur']}
+    [ 1] FAIL  qa_id=LS17-S3-UNSTARRED-74            ministry=CORPORATE AFFAIRS                         members=Sudheer Gupta, Sanjay Sadashivrao Mandlik, Gajanan Chandraka  ← members='Sudheer Gupta, Sanjay Sadashivrao Mandlik, Gajanan
+Chandrakant Kirtikar, Bidyut Baran Mahato, Shrirang Appa Barne'
+    [ 2] FAIL  qa_id=LS17-S1-UNSTARRED-4584          ministry=FINANCE                                   members=Shivkumar Chanabasappa Udasi  ← members='Shivkumar Chanabasappa Udasi'
+    [ 3] FAIL  qa_id=LS17-S2-UNSTARRED-1152          ministry=FINANCE                                   members=K. Muraleedharan  ← members='K. Muraleedharan'
+    [ 4] FAIL  qa_id=LS17-S5-UNSTARRED-4296          ministry=CORPORATE AFFAIRS                         members=Manish Tewari  ← members='Manish Tewari'
+    [ 5] FAIL  qa_id=LS17-S3-UNSTARRED-4798          ministry=FINANCE                                   members=M. K. Raghavan  ← members='M. K. Raghavan'
+    [ 6] FAIL  qa_id=LS17-S3-UNSTARRED-3             ministry=FINANCE                                   members=Subhash Ramrao Bhamre, Amol Ramsing Kolhe, Shriniwas Dadasah  ← members='Subhash Ramrao Bhamre, Amol Ramsing Kolhe,
+Shriniwas Dadasaheb Patil, Kuldeep Rai Sharma, DNV Senthilkumar. S., Sunil Dattatray Tatkare, Supriya Sadanand Sule'
+    [ 7] FAIL  qa_id=LS17-S2-UNSTARRED-45            ministry=FINANCE                                   members=D.K. Suresh  ← members='D.K. Suresh'
+    [ 8] PASS  qa_id=LS16-S14-UNSTARRED-4938         ministry=HUMAN RESOURCE DEVELOPMENT                members=ANURAG SINGH THAKUR
+    [ 9] FAIL  qa_id=LS17-S6-UNSTARRED-495           ministry=YOUTH AFFAIRS AND SPORTS                  members=A. Ganeshamurthi  ← members='A. Ganeshamurthi'
+    [10] PASS  qa_id=LS16-S11-UNSTARRED-5994         ministry=HOME AFFAIRS                              members=ANURAG SINGH THAKUR
+
+  q14 filtered    P@10=1.00  hit@1=Y  docs=10  491ms
+  q15 unfiltered  P@10=1.00  hit@1=Y  docs=10  1149ms
+  q15 filtered    P@10=1.00  hit@1=Y  docs=10  488ms
+  q16 unfiltered  P@10=1.00  hit@1=Y  docs=10  391ms
+  q16 filtered    P@10=1.00  hit@1=Y  docs=10  184ms
+  q17 unfiltered  P@10=0.90  hit@1=Y  docs=10  404ms
+
+    DEBUG q17 (unfiltered)  expected: {'text_contains_any': ['Aadhaar', 'aadhaar', 'UIDAI', 'unique identification']}
+    [ 1] PASS  qa_id=LS16-S14-UNSTARRED-1854         ministry=ELECTRONICS AND INFORMATION TECHNOLOGY    members=Y. S. AVINASH REDDY, SUKENDER REDDY GUTHA
+    [ 2] FAIL  qa_id=LS17-S3-UNSTARRED-3002          ministry=JAL SHAKTI                                members=Jaskaur Meena  ← subject='Characteristics of Atal Bhujal Yojana'
+    [ 3] PASS  qa_id=LS17-S5-UNSTARRED-3677          ministry=LAW AND JUSTICE                           members=Dayanidhi Maran
+    [ 4] PASS  qa_id=LS16-S10-UNSTARRED-2310         ministry=ELECTRONICS AND INFORMATION TECHNOLOGY    members=P. C. MOHAN
+    [ 5] PASS  qa_id=LS16-S15-UNSTARRED-1339         ministry=ELECTRONICS AND INFORMATION TECHNOLOGY    members=MD. BADARIDDOZA KHAN, MOHAMMAD SALIM
+    [ 6] PASS  qa_id=LS17-S14-UNSTARRED-970          ministry=LAW AND JUSTICE                           members=Pradyut Bordoloi
+    [ 7] PASS  qa_id=LS16-S11-UNSTARRED-5065         ministry=ELECTRONICS AND INFORMATION TECHNOLOGY    members=SISIR KUMAR ADHIKARI
+    [ 8] PASS  qa_id=LS17-S3-UNSTARRED-4114          ministry=LAW AND JUSTICE                           members=Dulal Chandra Goswami
+    [ 9] PASS  qa_id=LS16-S11-UNSTARRED-3349         ministry=ELECTRONICS AND INFORMATION TECHNOLOGY    members=M. K. RAGHAVAN
+    [10] PASS  qa_id=LS17-S4-UNSTARRED-1763          ministry=ELECTRONICS AND INFORMATION TECHNOLOGY    members=Kunwar Danish Ali
+
+  q18 unfiltered  P@10=1.00  hit@1=Y  docs=10  300ms
+                           Retrieval Eval — Per Query
+┏━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━┳━━━━━━━━━┓
+┃ ID  ┃ Category          ┃ Mode       ┃  P@k ┃ Hit@1 ┃ Hit@k ┃ Docs ┃ Latency ┃
+┡━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━╇━━━━━━━━━┩
+│ q01 │ mp_specific       │ unfiltered │ 0.10 │   N   │   Y   │   10 │   231ms │
+│ q01 │ mp_specific       │ filtered   │ 1.00 │   Y   │   Y   │    9 │   438ms │
+│ q02 │ ministry_specific │ unfiltered │ 1.00 │   Y   │   Y   │   10 │   126ms │
+│ q02 │ ministry_specific │ filtered   │ 1.00 │   Y   │   Y   │   10 │   120ms │
+│ q03 │ topic_search      │ unfiltered │ 0.80 │   Y   │   Y   │   10 │   111ms │
+│ q04 │ cross_filter      │ unfiltered │ 0.30 │   N   │   Y   │   10 │   156ms │
+│ q04 │ cross_filter      │ filtered   │ 1.00 │   Y   │   Y   │   10 │   557ms │
+│ q05 │ mp_specific       │ unfiltered │ 1.00 │   Y   │   Y   │   10 │   263ms │
+│ q05 │ mp_specific       │ filtered   │ 1.00 │   Y   │   Y   │   10 │   452ms │
+│ q06 │ ministry_topic    │ unfiltered │ 1.00 │   Y   │   Y   │   10 │   264ms │
+│ q06 │ ministry_topic    │ filtered   │ 1.00 │   Y   │   Y   │   10 │   127ms │
+│ q07 │ topic_search      │ unfiltered │ 0.70 │   Y   │   Y   │    9 │   482ms │
+│ q08 │ ministry_specific │ unfiltered │ 1.00 │   Y   │   Y   │   10 │   149ms │
+│ q08 │ ministry_specific │ filtered   │ 1.00 │   Y   │   Y   │   10 │   497ms │
+│ q09 │ cross_filter      │ unfiltered │ 0.10 │   Y   │   Y   │   10 │   275ms │
+│ q09 │ cross_filter      │ filtered   │ 1.00 │   Y   │   Y   │    9 │   451ms │
+│ q10 │ topic_search      │ unfiltered │ 1.00 │   Y   │   Y   │   10 │   144ms │
+│ q11 │ cross_filter      │ unfiltered │ 0.30 │   N   │   Y   │   10 │   614ms │
+│ q11 │ cross_filter      │ filtered   │ 1.00 │   Y   │   Y   │   10 │   594ms │
+│ q12 │ cross_filter      │ unfiltered │ 0.50 │   Y   │   Y   │    9 │   331ms │
+│ q12 │ cross_filter      │ filtered   │ 1.00 │   Y   │   Y   │    9 │   501ms │
+│ q13 │ mp_specific       │ unfiltered │ 0.50 │   N   │   Y   │    9 │   347ms │
+│ q13 │ mp_specific       │ filtered   │ 1.00 │   Y   │   Y   │    9 │   480ms │
+│ q14 │ mp_specific       │ unfiltered │ 0.20 │   N   │   Y   │   10 │   462ms │
+│ q14 │ mp_specific       │ filtered   │ 1.00 │   Y   │   Y   │   10 │   491ms │
+│ q15 │ ministry_topic    │ unfiltered │ 1.00 │   Y   │   Y   │   10 │  1149ms │
+│ q15 │ ministry_topic    │ filtered   │ 1.00 │   Y   │   Y   │   10 │   488ms │
+│ q16 │ ministry_topic    │ unfiltered │ 1.00 │   Y   │   Y   │   10 │   391ms │
+│ q16 │ ministry_topic    │ filtered   │ 1.00 │   Y   │   Y   │   10 │   184ms │
+│ q17 │ topic_search      │ unfiltered │ 0.90 │   Y   │   Y   │   10 │   404ms │
+│ q18 │ topic_search      │ unfiltered │ 1.00 │   Y   │   Y   │   10 │   300ms │
+└─────┴───────────────────┴────────────┴──────┴───────┴───────┴──────┴─────────┘
+                         Retrieval Eval — Summary by Mode
+┏━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━┓
+┃ Mode       ┃ Queries ┃ Avg P@k ┃ Avg Hit@1 ┃ Avg Hit@k ┃ Avg Docs ┃ Avg Latency ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━┩
+│ unfiltered │      18 │    0.69 │      0.72 │      1.00 │      9.8 │       344ms │
+│ filtered   │      13 │    1.00 │      1.00 │      1.00 │      9.7 │       414ms │
+└────────────┴─────────┴─────────┴───────────┴───────────┴──────────┴─────────────┘

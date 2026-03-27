@@ -104,15 +104,41 @@ uv run opensansad stats
 
 - **Ministry name caveats**: Ministry names are not canonicalised across Lok Sabhas because some ministries were genuinely renamed (e.g. "Human Resource Development" → "Education") while others had their codes reassigned to different ministries. Whitespace is normalised, but renames are kept as-is. The LLM prompt should note that ministries may have historical alternate names.
 
+## Evaluation
+
+A metadata-driven retrieval eval lives in `eval/`. It runs queries through the real pipeline (embed → Milvus → filter), skipping only the NIM reranker and LLM, and scores retrieved chunks against expected metadata (MP name, ministry, topic keywords).
+
+Run it:
+```bash
+uv run opensansad eval           # 18 curated queries, top_k=10
+uv run opensansad eval --debug   # also prints per-chunk pass/fail
+```
+
+**Results — 2026-03-27 (18 queries, top_k=10):**
+
+| Mode       | Queries | Avg P@k | Avg Hit@1 | Avg Hit@k | Avg Latency |
+|------------|---------|---------|-----------|-----------|-------------|
+| unfiltered |      18 |    0.69 |      0.72 |      1.00 |       344ms |
+| filtered   |      13 |    1.00 |      1.00 |      1.00 |       414ms |
+
+Key takeaways:
+- **Filtered retrieval is perfect (P@k=1.00)** — Milvus `LIKE` filters with MP alias expansion reliably scope results to the right MP/ministry
+- **Unfiltered Hit@k=1.00** — semantic search always finds at least one relevant chunk in the top 10, even without filters
+- **Unfiltered P@k=0.69** — without filters, ~3 of every 10 chunks are off-target; this is the gap metadata filtering closes
+- Next step: extend with LLM-as-judge scoring (faithfulness, answer relevance) via RAGAS
+
 ## Roadmap
+
+### Completed
+- [x] **Metadata-filtered vector search**: `--mp` and `--min` flags scope Milvus ANN search using native filter expressions (`members LIKE %name%`, `ministry == "X"`), with alias expansion across Lok Sabhas via `data/mp_aliases.json`
+- [x] **Retrieval evaluation**: 18-query metadata-driven eval (`uv run opensansad eval`) with per-query and summary metrics (P@k, Hit@1, Hit@k, latency)
+
+### Ahead
+- [ ] **LLM-as-judge eval**: Extend current retrieval eval with RAGAS-style faithfulness and answer relevance scoring. Requires curated reference answers for a subset of test queries.
 
 - [ ] **Hybrid search + RRF**: Add BM25 sparse retrieval alongside dense vectors, fused with Reciprocal Rank Fusion. Milvus supports this natively. Important for exact matches on MP names, ministry names, bill numbers.
 
-- [ ] **Metadata-filtered vector search**: When `--mp` or `--min` are specified, scope the Milvus vector search to matching metadata (e.g. `members LIKE %THAROOR%`), not just inject stats.
-
 - [ ] **Agentic query decomposition**: Auto-detect when a query needs aggregate stats vs chunk retrieval, replacing the explicit `--mp`/`--min` flags. Small LLM call to extract structured intent from natural language.
-
-- [ ] **RAG evaluation**: Integrate RAGAS or similar framework. The dataset has natural (question, ground_truth_answer) pairs. Metrics: faithfulness, context recall, answer correctness. Stratified test set across ministries and question types.
 
 - [ ] **Scale to 500k+ docs**: Switch Milvus index from HNSW to IVF_PQ for memory efficiency. Export pre-built Milvus snapshots for distribution.
 

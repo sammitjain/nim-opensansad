@@ -94,6 +94,49 @@ def build_milvus_filter(
     return " and ".join(conditions)
 
 
+# ── Retriever builder ────────────────────────────────────────────────────────
+
+def build_retriever(
+    mp: str | None = None,
+    ministry: str | None = None,
+    mp_aliases: list[str] | None = None,
+    top_k: int | None = None,
+) -> VectorIndexRetriever:
+    """Build the retriever: embed model + Milvus + metadata filters.
+
+    This is the shared core used by both the full query engine and the eval
+    pipeline.  Returns a VectorIndexRetriever that can be called directly
+    via ``retriever.retrieve(query)``.
+    """
+    embed_model = HuggingFaceEmbedding(
+        model_name=config.EMBED_MODEL,
+        device=_get_device(),
+        query_instruction="query: ",
+        text_instruction="passage: ",
+    )
+    vector_store = MilvusVectorStore(
+        uri=config.MILVUS_URI,
+        collection_name=config.COLLECTION_NAME,
+        dim=config.EMBED_DIM,
+        overwrite=False,
+    )
+    index = VectorStoreIndex.from_vector_store(
+        vector_store,
+        embed_model=embed_model,
+    )
+
+    milvus_filter = build_milvus_filter(mp=mp, ministry=ministry, mp_aliases=mp_aliases)
+    vs_kwargs: dict = {}
+    if milvus_filter:
+        vs_kwargs["string_expr"] = milvus_filter
+
+    return VectorIndexRetriever(
+        index=index,
+        similarity_top_k=top_k or config.TOP_K,
+        vector_store_kwargs=vs_kwargs,
+    )
+
+
 # ── Engine builder ───────────────────────────────────────────────────────────
 
 def build_query_engine(
@@ -115,12 +158,8 @@ def build_query_engine(
         mp_aliases: All name variants for the MP. When provided, the Milvus
             filter will OR across all variants.
     """
-    embed_model = HuggingFaceEmbedding(
-        model_name=config.EMBED_MODEL,
-        device=_get_device(),
-        query_instruction="query: ",
-        text_instruction="passage: ",
-    )
+    retriever = build_retriever(mp=mp, ministry=ministry, mp_aliases=mp_aliases)
+
     llm = NVIDIA(
         model=config.LLM_MODEL,
         api_key=config.NVIDIA_API_KEY,
@@ -129,29 +168,6 @@ def build_query_engine(
         model=config.RERANK_MODEL,
         api_key=config.NVIDIA_API_KEY,
         top_n=config.RERANK_TOP_N,
-    )
-
-    vector_store = MilvusVectorStore(
-        uri=config.MILVUS_URI,
-        collection_name=config.COLLECTION_NAME,
-        dim=config.EMBED_DIM,
-        overwrite=False,
-    )
-    index = VectorStoreIndex.from_vector_store(
-        vector_store,
-        embed_model=embed_model,
-    )
-
-    # Metadata filtering via native Milvus expression
-    milvus_filter = build_milvus_filter(mp=mp, ministry=ministry, mp_aliases=mp_aliases)
-    vs_kwargs: dict = {}
-    if milvus_filter:
-        vs_kwargs["string_expr"] = milvus_filter
-
-    retriever = VectorIndexRetriever(
-        index=index,
-        similarity_top_k=config.TOP_K,
-        vector_store_kwargs=vs_kwargs,
     )
 
     # Build the synthesis prompt — with or without stats evidence

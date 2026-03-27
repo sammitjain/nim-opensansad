@@ -1,0 +1,207 @@
+[
+  {
+    "id": "q01",
+    "query": "What issues has Rahul Gandhi raised in the Lok Sabha?",
+    "category": "mp_specific",
+    "mp": "Shri Rahul Gandhi",
+    "ministry": null,
+    "expected": {
+      "members_contains_any": ["Rahul Gandhi"]
+    },
+    "notes": "Aggregation query — needs multiple chunks to cover breadth"
+  },
+  {
+    "id": "q02",
+    "query": "What kind of questions has the Ministry of Defence received?",
+    "category": "ministry_specific",
+    "mp": null,
+    "ministry": "DEFENCE",
+    "expected": {
+      "ministry_eq": "DEFENCE"
+    },
+    "notes": "Aggregation query on a mid-frequency ministry (~2k questions)"
+  },
+  {
+    "id": "q03",
+    "query": "Has there been a discussion on remdesivir in parliament?",
+    "category": "topic_search",
+    "mp": null,
+    "ministry": null,
+    "expected": {
+      "text_contains_any": ["remdesivir", "Remdesivir"]
+    },
+    "notes": "Point/topic query — should find specific chunks mentioning the drug"
+  },
+  {
+    "id": "q04",
+    "query": "What questions has Supriya Sule asked about health?",
+    "category": "cross_filter",
+    "mp": "Smt. Supriya Sule",
+    "ministry": "HEALTH AND FAMILY WELFARE",
+    "expected": {
+      "members_contains_any": ["Supriya Sule"],
+      "ministry_eq": "HEALTH AND FAMILY WELFARE"
+    },
+    "notes": "Cross-filter: 115 questions in DB for this overlap"
+  },
+  {
+    "id": "q05",
+    "query": "What topics has Shashi Tharoor raised questions on?",
+    "category": "mp_specific",
+    "mp": "Dr. Shashi Tharoor",
+    "ministry": null,
+    "expected": {
+      "members_contains_any": ["Shashi Tharoor"]
+    },
+    "notes": "Well-known MP, 590 questions"
+  },
+  {
+    "id": "q06",
+    "query": "What questions have been asked about railway safety?",
+    "category": "ministry_topic",
+    "mp": null,
+    "ministry": "RAILWAYS",
+    "expected": {
+      "ministry_eq": "RAILWAYS",
+      "text_contains_any": ["safety", "accident", "derailment"]
+    },
+    "notes": "Ministry filter + topic check in text"
+  },
+  {
+    "id": "q07",
+    "query": "Has there been any parliamentary question about NPA in housing loans?",
+    "category": "topic_search",
+    "mp": null,
+    "ministry": null,
+    "expected": {
+      "text_contains_any": ["NPA", "non-performing", "housing loan", "Housing Loan"]
+    },
+    "notes": "Specific topic known to exist in the dataset"
+  },
+  {
+    "id": "q08",
+    "query": "What are the recent questions about space missions in India?",
+    "category": "ministry_specific",
+    "mp": null,
+    "ministry": "SPACE",
+    "expected": {
+      "ministry_eq": "SPACE"
+    },
+    "notes": "Smaller ministry (401 questions) — tests retrieval specificity"
+  },
+  {
+    "id": "q09",
+    "query": "What questions has Nishikant Dubey asked about finance?",
+    "category": "cross_filter",
+    "mp": "Dr. Nishikant Dubey",
+    "ministry": "FINANCE",
+    "expected": {
+      "members_contains_any": ["Nishikant Dubey"],
+      "ministry_eq": "FINANCE"
+    },
+    "notes": "Prolific MP (834 questions) x large ministry"
+  },
+  {
+    "id": "q10",
+    "query": "Has there been a discussion on communal violence in parliament?",
+    "category": "topic_search",
+    "mp": null,
+    "ministry": null,
+    "expected": {
+      "text_contains_any": ["communal violence", "Communal Violence", "communal"]
+    },
+    "notes": "Sensitive topic, known to exist as a subject in the dataset"
+  },
+  {
+    "id": "q11",
+    "query": "What questions has Asaduddin Owaisi raised about home affairs and internal security?",
+    "category": "cross_filter",
+    "mp": "Shri Asaduddin Owaisi",
+    "ministry": "HOME AFFAIRS",
+    "expected": {
+      "members_contains_any": ["Asaduddin Owaisi"],
+      "ministry_eq": "HOME AFFAIRS"
+    },
+    "notes": "55 questions in DB for this overlap — vocal MP on minority and security issues"
+  },
+  {
+    "id": "q12",
+    "query": "What has Sougata Ray asked about the railways?",
+    "category": "cross_filter",
+    "mp": "Prof. Sougata Ray",
+    "ministry": "RAILWAYS",
+    "expected": {
+      "members_contains_any": ["Sougata Ray"],
+      "ministry_eq": "RAILWAYS"
+    },
+    "notes": "24 questions — senior Bengal MP, known railway constituency interest"
+  },
+  {
+    "id": "q13",
+    "query": "What issues has Shobha Karandlaje raised about agriculture?",
+    "category": "mp_specific",
+    "mp": "Km. Shobha Karandlaje",
+    "ministry": null,
+    "expected": {
+      "members_contains_any": ["Shobha Karandlaje"]
+    },
+    "notes": "437 questions total, Karnataka MP known for farm-sector activity"
+  },
+  {
+    "id": "q14",
+    "query": "What questions has Anurag Thakur asked?",
+    "category": "mp_specific",
+    "mp": "Shri Anurag Singh Thakur",
+    "ministry": null,
+    "expected": {
+      "members_contains_any": ["Anurag Singh Thakur", "Anurag Thakur"]
+    },
+    "notes": "337 questions — prominent BJP MP, later minister"
+  },
+  {
+    "id": "q15",
+    "query": "What questions has the Ministry of Agriculture received about farmers in distress?",
+    "category": "ministry_topic",
+    "mp": null,
+    "ministry": "AGRICULTURE AND FARMERS WELFARE",
+    "expected": {
+      "ministry_eq": "AGRICULTURE AND FARMERS WELFARE",
+      "text_contains_any": ["farmer", "distress", "suicide", "crop", "MSP"]
+    },
+    "notes": "Second largest ministry by volume (6523 questions) — topic check in text"
+  },
+  {
+    "id": "q16",
+    "query": "What has parliament discussed about air pollution and the environment?",
+    "category": "ministry_topic",
+    "mp": null,
+    "ministry": "ENVIRONMENT,  FORESTS AND CLIMATE CHANGE",
+    "expected": {
+      "ministry_eq": "ENVIRONMENT,  FORESTS AND CLIMATE CHANGE",
+      "text_contains_any": ["pollution", "air quality", "AQI", "environment"]
+    },
+    "notes": "Note: ministry name has double space — tests exact match edge case"
+  },
+  {
+    "id": "q17",
+    "query": "Has there been any question about the Aadhaar scheme in parliament?",
+    "category": "topic_search",
+    "mp": null,
+    "ministry": null,
+    "expected": {
+      "text_contains_any": ["Aadhaar", "aadhaar", "UIDAI", "unique identification"]
+    },
+    "notes": "High-frequency topic spanning multiple ministries"
+  },
+  {
+    "id": "q18",
+    "query": "Have any MPs asked about electric vehicles or EV infrastructure?",
+    "category": "topic_search",
+    "mp": null,
+    "ministry": null,
+    "expected": {
+      "text_contains_any": ["electric vehicle", "EV", "e-vehicle", "FAME"]
+    },
+    "notes": "Modern policy topic — FAME scheme is the key EV incentive program"
+  }
+]
