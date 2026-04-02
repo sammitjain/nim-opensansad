@@ -33,9 +33,9 @@ opensansad/lok-sabha-qa (HuggingFace or local parquet)
 │  user query + optional --mp/--min filters                │
 │    → resolve MP aliases (canonical → all name variants)  │
 │    → e5-large-v2 embedding (local, same model)           │
-│    → Milvus HNSW ANN search (top_k=10, with filters)    │
+│    → Milvus HNSW ANN search (top_k=10, with filters)     │
 │    → NVIDIA NIM reranker (llama-3.2-nv-rerankqa)         │
-│    → NVIDIA NIM LLM (llama-3.1-70b-instruct)            │
+│    → NVIDIA NIM LLM (llama-3.1-70b-instruct)             │
 │    → synthesized answer with cited sources               │
 └──────────────────────────────────────────────────────────┘
 ```
