@@ -8,9 +8,12 @@ __pycache__/
 # Docker volumes (Milvus data)
 volumes/
 
-# Local data (PDFs, metadata DB)
+# Local data (PDFs, metadata DB, ingest artifacts)
 data/docs/
 data/metadata.db
+data/chunks.parquet
+data/embeddings.npy
+data/mp_aliases.json
 
 # Benchmark outputs (throwaway)
 tests/bench_outputs/

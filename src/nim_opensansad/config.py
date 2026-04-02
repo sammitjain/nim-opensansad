@@ -30,3 +30,7 @@ EMBED_BATCH_SIZE = int(os.getenv("EMBED_BATCH_SIZE", "32"))
 # Retrieval
 TOP_K        = int(os.getenv("TOP_K",        "10"))
 RERANK_TOP_N = int(os.getenv("RERANK_TOP_N", "4"))
+
+# Hybrid search (dense + BM25 via Milvus native sparse vectors)
+ENABLE_HYBRID = os.getenv("ENABLE_HYBRID", "false").lower() in ("true", "1", "yes")
+RRF_K         = int(os.getenv("RRF_K", "60"))

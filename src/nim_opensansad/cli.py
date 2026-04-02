@@ -189,34 +189,26 @@ def list_ministries(
 
 
 @app.command()
-def stats():
-    """Show collection stats: chunk count, disk usage, and extrapolations."""
-    from pymilvus import connections, Collection
+def stats(
+    collection: Optional[str] = typer.Option(None, "--collection", "-c", help="Collection name (default: COLLECTION_NAME env var)."),
+):
+    """Show collection stats: chunk count, data size, and all collections."""
+    from pymilvus import MilvusClient, connections, Collection
     from . import config
-    from .ingest import client_has_collection
-
-    if not client_has_collection():
-        console.print("[red]No collection found. Run 'opensansad ingest' first.[/red]")
-        raise typer.Exit(1)
 
     connections.connect(uri=config.MILVUS_URI)
-    col = Collection(config.COLLECTION_NAME)
-    col.flush()
-    num_chunks = col.num_entities
+    client = MilvusClient(uri=config.MILVUS_URI)
 
-    # Disk usage per component
-    volumes_dir = Path(__file__).parent.parent.parent / "volumes"
-    components = {"milvus": None, "minio": None, "etcd": None}
-    total_kb = 0
-    for name in components:
-        p = volumes_dir / name
-        if p.exists():
-            result = subprocess.run(
-                ["du", "-sk", str(p)], capture_output=True, text=True
-            )
-            kb = int(result.stdout.split()[0])
-            components[name] = kb
-            total_kb += kb
+    all_collections = client.list_collections()
+    if not all_collections:
+        console.print("[red]No collections found in Milvus.[/red]")
+        raise typer.Exit(1)
+
+    target = collection or config.COLLECTION_NAME
+    if target not in all_collections:
+        console.print(f"[red]Collection '{target}' not found.[/red]")
+        console.print(f"Available: {', '.join(all_collections)}")
+        raise typer.Exit(1)
 
     def fmt_size(kb: int) -> str:
         if kb >= 1_048_576:
@@ -225,28 +217,146 @@ def stats():
             return f"{kb / 1024:.1f} MB"
         return f"{kb} KB"
 
-    table = Table(title=f"Collection: {config.COLLECTION_NAME}")
+    def estimate_storage(num_rows: int, dim: int, has_sparse: bool) -> str:
+        """Estimate on-disk storage from entity count + vector dimensions.
+
+        Dense vectors (raw + HNSW index ≈ 2.5×):  num_rows × dim × 4B × 2.5
+        Sparse BM25 vectors (≈ 300B avg per row):  num_rows × 300B
+        Metadata + overhead:                        num_rows × 500B
+        """
+        dense_bytes = num_rows * dim * 4 * 2.5
+        sparse_bytes = num_rows * 300 if has_sparse else 0
+        meta_bytes = num_rows * 500
+        total = int(dense_bytes + sparse_bytes + meta_bytes)
+        return fmt_size(total // 1024) + " [dim](est.)[/dim]"
+
+    # ── Per-collection stats ──
+    col = Collection(target)
+    col.flush()
+    num_chunks = col.num_entities
+
+    # Detect sparse field to know if hybrid
+    schema = col.schema
+    has_sparse = any(
+        int(f.dtype) == 104
+        for f in schema.fields
+    )
+
+    table = Table(title=f"Collection: {target}")
     table.add_column("Metric", style="bold")
     table.add_column("Value", justify="right")
-
     table.add_row("Chunks", f"{num_chunks:,}")
+    table.add_row("Hybrid (BM25)", "Yes" if has_sparse else "No")
+    table.add_row("Est. storage", estimate_storage(num_chunks, config.EMBED_DIM, has_sparse))
+
+    # ── All collections summary ──
     table.add_row("", "")
-    table.add_row("[dim]Disk breakdown[/dim]", "")
-    for name, kb in components.items():
-        if kb is not None:
+    table.add_row("[dim]All collections[/dim]", "")
+    for cname in sorted(all_collections):
+        try:
+            c = Collection(cname)
+            c.flush()
+            c_sparse = any(
+                int(f.dtype) == 104
+                for f in c.schema.fields
+            )
+            marker = " ◀" if cname == target else ""
+            est = estimate_storage(c.num_entities, config.EMBED_DIM, c_sparse)
+            table.add_row(
+                f"  {cname}{marker}",
+                f"{c.num_entities:,} chunks  {est}",
+            )
+        except Exception:
+            table.add_row(f"  {cname}", "[dim]unavailable[/dim]")
+
+    # ── Shared volume disk usage ──
+    volumes_dir = Path(__file__).parent.parent.parent / "volumes"
+    table.add_row("", "")
+    table.add_row("[dim]Shared volume disk (all collections)[/dim]", "")
+    total_kb = 0
+    for name in ("milvus", "minio", "etcd"):
+        p = volumes_dir / name
+        if p.exists():
+            result = subprocess.run(["du", "-sk", str(p)], capture_output=True, text=True)
+            kb = int(result.stdout.split()[0])
+            total_kb += kb
             table.add_row(f"  volumes/{name}/", fmt_size(kb))
     table.add_row("  [bold]Total[/bold]", f"[bold]{fmt_size(total_kb)}[/bold]")
 
-    # Extrapolation
-    if num_chunks > 0:
-        kb_per_chunk = total_kb / num_chunks
-        table.add_row("", "")
-        table.add_row("[dim]Extrapolations[/dim]", "")
-        for target in [500_000, 1_000_000, 2_500_000]:
-            est = kb_per_chunk * target
-            table.add_row(f"  at {target:,} chunks", fmt_size(int(est)))
-
     console.print(table)
+
+
+# ── Fast ingest pipeline (chunk → embed → index) ─────────────────────────
+
+
+@app.command()
+def chunk(
+    parquet: Optional[Path] = typer.Option(None, "--parquet", help="Local parquet file. If omitted, downloads from HuggingFace."),
+    limit: Optional[int] = typer.Option(None, "--limit", help="Only process first N documents."),
+    output: Optional[Path] = typer.Option(None, "--output", "-o", help="Output parquet path (default: data/chunks.parquet)."),
+):
+    """Phase 1: Load documents, chunk, and save as parquet."""
+    from .ingest_v2 import chunk as _chunk, DEFAULT_CHUNKS_PATH
+
+    target = output or DEFAULT_CHUNKS_PATH
+    n = _chunk(parquet_path=parquet, limit=limit, output=target)
+    console.print(f"[green]Done.[/green] {n:,} chunks saved to {target}")
+
+
+@app.command()
+def embed(
+    chunks: Optional[Path] = typer.Option(None, "--chunks", help="Input chunks parquet (default: data/chunks.parquet)."),
+    output: Optional[Path] = typer.Option(None, "--output", "-o", help="Output .npy path (default: data/embeddings.npy)."),
+    batch_size: int = typer.Option(256, "--batch-size", "-b", help="Encoding batch size (higher = faster, more VRAM)."),
+    checkpoint_every: int = typer.Option(10, "--checkpoint-every", "-cp", help="Save .npy every N batches (lower = more frequent saves, safer to Ctrl-C)."),
+    device: Optional[str] = typer.Option(None, "--device", "-d", help="Force device: cpu, mps, or cuda (auto-detects if omitted)."),
+    fp16: bool = typer.Option(False, "--fp16", help="Use float16 precision (faster on MPS/CUDA, halves memory)."),
+    backend: str = typer.Option("torch", "--backend", help="torch (default) or onnx (uses ONNX Runtime)."),
+):
+    """Phase 2: Embed chunks with sentence-transformers and save as .npy."""
+    from .ingest_v2 import embed as _embed, DEFAULT_CHUNKS_PATH, DEFAULT_EMBEDDINGS_PATH
+
+    src = chunks or DEFAULT_CHUNKS_PATH
+    dst = output or DEFAULT_EMBEDDINGS_PATH
+    if not src.exists():
+        console.print(f"[red]Chunks file not found: {src}[/red]\nRun 'opensansad chunk' first.")
+        raise typer.Exit(1)
+
+    n = _embed(chunks_path=src, output=dst, batch_size=batch_size, checkpoint_every=checkpoint_every, device=device, fp16=fp16, backend=backend)
+    console.print(f"[green]Done.[/green] {n:,} embeddings saved to {dst}")
+
+
+@app.command()
+def index(
+    chunks: Optional[Path] = typer.Option(None, "--chunks", help="Input chunks parquet (default: data/chunks.parquet)."),
+    embeddings: Optional[Path] = typer.Option(None, "--embeddings", help="Input .npy embeddings (default: data/embeddings.npy)."),
+    collection: str = typer.Option(..., "--collection", "-c", help="Milvus collection name (e.g. opensansad_hybrid)."),
+    hybrid: bool = typer.Option(False, "--hybrid", help="Enable BM25 sparse vectors for hybrid search."),
+    overwrite: bool = typer.Option(False, "--overwrite", help="Drop existing collection first."),
+    batch_size: int = typer.Option(2000, "--batch-size", "-b", help="Milvus insert batch size."),
+):
+    """Phase 3: Insert pre-embedded chunks into Milvus."""
+    from .ingest_v2 import index as _index, DEFAULT_CHUNKS_PATH, DEFAULT_EMBEDDINGS_PATH
+
+    src_chunks = chunks or DEFAULT_CHUNKS_PATH
+    src_embeds = embeddings or DEFAULT_EMBEDDINGS_PATH
+
+    if not src_chunks.exists():
+        console.print(f"[red]Chunks file not found: {src_chunks}[/red]\nRun 'opensansad chunk' first.")
+        raise typer.Exit(1)
+    if not src_embeds.exists():
+        console.print(f"[red]Embeddings file not found: {src_embeds}[/red]\nRun 'opensansad embed' first.")
+        raise typer.Exit(1)
+
+    n = _index(
+        chunks_path=src_chunks,
+        embeddings_path=src_embeds,
+        collection_name=collection,
+        hybrid=hybrid,
+        overwrite=overwrite,
+        batch_size=batch_size,
+    )
+    console.print(f"[green]Done.[/green] {n:,} chunks indexed into [bold]{collection}[/bold]")
 
 
 @app.command(name="eval")

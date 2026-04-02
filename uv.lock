@@ -1385,10 +1385,12 @@ dependencies = [
     { name = "llama-index-llms-nvidia" },
     { name = "llama-index-postprocessor-nvidia-rerank" },
     { name = "llama-index-vector-stores-milvus" },
+    { name = "numpy" },
     { name = "pyarrow" },
     { name = "pymilvus" },
     { name = "python-dotenv" },
     { name = "rich" },
+    { name = "sentence-transformers" },
     { name = "typer" },
 ]
 
@@ -1406,10 +1408,12 @@ requires-dist = [
     { name = "llama-index-llms-nvidia", specifier = ">=0.1" },
     { name = "llama-index-postprocessor-nvidia-rerank", specifier = ">=0.1" },
     { name = "llama-index-vector-stores-milvus", specifier = ">=0.2" },
+    { name = "numpy", specifier = ">=1.24" },
     { name = "pyarrow", specifier = ">=15.0" },
     { name = "pymilvus", specifier = ">=2.4" },
     { name = "python-dotenv", specifier = ">=1.0" },
     { name = "rich", specifier = ">=13" },
+    { name = "sentence-transformers", specifier = ">=3.0" },
     { name = "typer", specifier = ">=0.12" },
 ]
 

@@ -15,6 +15,7 @@ from llama_index.core import VectorStoreIndex, get_response_synthesizer
 from llama_index.core.prompts import PromptTemplate
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.retrievers import VectorIndexRetriever
+from llama_index.core.vector_stores.types import VectorStoreQueryMode
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.nvidia import NVIDIA
 from llama_index.postprocessor.nvidia_rerank import NVIDIARerank
@@ -114,12 +115,36 @@ def build_retriever(
         query_instruction="query: ",
         text_instruction="passage: ",
     )
-    vector_store = MilvusVectorStore(
+
+    # Scalar fields stored in the collection — must be listed explicitly so
+    # LlamaIndex includes them in the output_fields of every query, whether
+    # the collection was created by LlamaIndex or by our pymilvus pipeline.
+    _SCALAR_FIELDS = [
+        "doc_id", "qa_id", "lok_no", "session_no", "ques_no",
+        "type", "date", "subject", "ministry", "members",
+    ]
+
+    vs_kwargs_init: dict = dict(
         uri=config.MILVUS_URI,
         collection_name=config.COLLECTION_NAME,
         dim=config.EMBED_DIM,
         overwrite=False,
+        output_fields=_SCALAR_FIELDS,
     )
+    if config.ENABLE_HYBRID:
+        from llama_index.vector_stores.milvus.utils import BM25BuiltInFunction
+
+        vs_kwargs_init.update(
+            enable_sparse=True,
+            sparse_embedding_function=BM25BuiltInFunction(
+                input_field_names="text",
+                output_field_names="sparse_embedding",
+            ),
+            hybrid_ranker="RRFRanker",
+            hybrid_ranker_params={"k": config.RRF_K},
+        )
+
+    vector_store = MilvusVectorStore(**vs_kwargs_init)
     index = VectorStoreIndex.from_vector_store(
         vector_store,
         embed_model=embed_model,
@@ -130,9 +155,15 @@ def build_retriever(
     if milvus_filter:
         vs_kwargs["string_expr"] = milvus_filter
 
+    query_mode = (
+        VectorStoreQueryMode.HYBRID if config.ENABLE_HYBRID
+        else VectorStoreQueryMode.DEFAULT
+    )
+
     return VectorIndexRetriever(
         index=index,
         similarity_top_k=top_k or config.TOP_K,
+        vector_store_query_mode=query_mode,
         vector_store_kwargs=vs_kwargs,
     )
 
